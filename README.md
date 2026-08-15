@@ -1,7 +1,15 @@
-# Escale — dépôt compagnon
+# Escale — matériel du livre *Docker & Kubernetes*
 
-Application fil rouge du manuel **Docker & Kubernetes — de mon application sur
-mon ordinateur à une application observable, sécurisée et déployée en production**.
+Dépôt compagnon du manuel **Docker & Kubernetes — de mon application sur mon
+ordinateur à une application observable, sécurisée et déployée en production**.
+
+> **Une branche par chapitre.** L'application Escale est construite
+> progressivement : `ch01` … `ch13`. Chaque branche est dans un état
+> **fonctionnel et reproductible** — vous pouvez rejoindre le fil rouge à
+> n'importe quel chapitre sans avoir fait les précédents.
+>
+> 👉 **[Sommaire des 13 chapitres](chapitres/)** — pour chacun : ce qu'il
+> ajoute, les commandes clés et les points de contrôle.
 
 Escale est une plateforme de suivi d'escales portuaires : des navires émettent
 leur position, la plateforme suit leur trajet, prédit leur heure d'arrivée et
@@ -100,31 +108,3 @@ Les chiffres cités dans le manuel (1,41 Go au départ, 81 Mo à l'arrivée)
 proviennent du tableau §2.9.4 et doivent être **remesurés** avec
 `scripts/mesures.sh` sur une machine de référence, puis reportés dans le texte.
 Tant que cette mesure n'a pas eu lieu, ces valeurs restent des estimations.
-
----
-
-## Publier ce dépôt sur GitHub
-
-Le dépôt est prêt : 13 branches, une par chapitre, chacune dans un état
-fonctionnel. Il ne reste qu'à l'envoyer sur votre compte — ce que vous faites
-vous-même, avec vos propres identifiants :
-
-```bash
-gh auth login                                    # authentification par navigateur
-./scripts/publier-github.sh mon-compte escale-livre
-```
-
-## Générer les QR codes des chapitres
-
-Un QR code par chapitre, pointant vers la branche correspondante. Le lecteur
-arrive directement sur l'état d'Escale à la fin du chapitre qu'il lit, sans
-avoir besoin des précédents.
-
-```bash
-python3 scripts/qr-chapitres.py mon-compte escale-livre
-```
-
-Produit `qr/ch01.svg` … `qr/ch13.svg` plus `qr/depot.svg`, en **SVG vectoriel**
-à 22 mm de côté, avec correction d'erreur haute. Un QR code destiné à
-l'impression ne doit jamais être fourni en image matricielle : il se pixellise
-et devient illisible selon la taille de reproduction.
