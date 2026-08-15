@@ -30,8 +30,12 @@ helm upgrade --install escale helm/escale -f helm/escale/values-prod.yaml --wait
 ## Récupérer cet état
 
 ```bash
+git clone https://github.com/nkerzazi/Kubernetes-book-material.git
+cd Kubernetes-book-material
 git checkout ch09
 ```
+
+📂 **[Parcourir les fichiers de la branche `ch09`](https://github.com/nkerzazi/Kubernetes-book-material/tree/ch09)**
 
 Chaque branche est **fonctionnelle et autonome** : vous pouvez rejoindre le fil
 rouge à n'importe quel chapitre sans avoir fait les précédents.

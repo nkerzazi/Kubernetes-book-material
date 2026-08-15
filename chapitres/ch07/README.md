@@ -29,8 +29,12 @@ kubectl get secret escale-secrets -o jsonpath='{.data.POSTGRES_PASSWORD}' | base
 ## Récupérer cet état
 
 ```bash
+git clone https://github.com/nkerzazi/Kubernetes-book-material.git
+cd Kubernetes-book-material
 git checkout ch07
 ```
+
+📂 **[Parcourir les fichiers de la branche `ch07`](https://github.com/nkerzazi/Kubernetes-book-material/tree/ch07)**
 
 Chaque branche est **fonctionnelle et autonome** : vous pouvez rejoindre le fil
 rouge à n'importe quel chapitre sans avoir fait les précédents.

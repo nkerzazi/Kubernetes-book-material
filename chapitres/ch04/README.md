@@ -28,8 +28,12 @@ docker compose down   # sans -v : les volumes restent
 ## Récupérer cet état
 
 ```bash
+git clone https://github.com/nkerzazi/Kubernetes-book-material.git
+cd Kubernetes-book-material
 git checkout ch04
 ```
+
+📂 **[Parcourir les fichiers de la branche `ch04`](https://github.com/nkerzazi/Kubernetes-book-material/tree/ch04)**
 
 Chaque branche est **fonctionnelle et autonome** : vous pouvez rejoindre le fil
 rouge à n'importe quel chapitre sans avoir fait les précédents.

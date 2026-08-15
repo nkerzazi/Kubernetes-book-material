@@ -29,8 +29,12 @@ docker history escale-api:0.2
 ## Récupérer cet état
 
 ```bash
+git clone https://github.com/nkerzazi/Kubernetes-book-material.git
+cd Kubernetes-book-material
 git checkout ch02
 ```
+
+📂 **[Parcourir les fichiers de la branche `ch02`](https://github.com/nkerzazi/Kubernetes-book-material/tree/ch02)**
 
 Chaque branche est **fonctionnelle et autonome** : vous pouvez rejoindre le fil
 rouge à n'importe quel chapitre sans avoir fait les précédents.

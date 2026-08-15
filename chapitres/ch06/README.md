@@ -28,8 +28,12 @@ kubectl rollout undo deployment/escale-api
 ## Récupérer cet état
 
 ```bash
+git clone https://github.com/nkerzazi/Kubernetes-book-material.git
+cd Kubernetes-book-material
 git checkout ch06
 ```
+
+📂 **[Parcourir les fichiers de la branche `ch06`](https://github.com/nkerzazi/Kubernetes-book-material/tree/ch06)**
 
 Chaque branche est **fonctionnelle et autonome** : vous pouvez rejoindre le fil
 rouge à n'importe quel chapitre sans avoir fait les précédents.

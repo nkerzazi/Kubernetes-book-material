@@ -29,8 +29,12 @@ kubectl run intrus --rm -it --image=alpine --restart=Never -- nc -zv -w3 postgre
 ## Récupérer cet état
 
 ```bash
+git clone https://github.com/nkerzazi/Kubernetes-book-material.git
+cd Kubernetes-book-material
 git checkout ch11
 ```
+
+📂 **[Parcourir les fichiers de la branche `ch11`](https://github.com/nkerzazi/Kubernetes-book-material/tree/ch11)**
 
 Chaque branche est **fonctionnelle et autonome** : vous pouvez rejoindre le fil
 rouge à n'importe quel chapitre sans avoir fait les précédents.

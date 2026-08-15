@@ -27,8 +27,12 @@ curl -skI https://escale.127.0.0.1.nip.io/
 ## Récupérer cet état
 
 ```bash
+git clone https://github.com/nkerzazi/Kubernetes-book-material.git
+cd Kubernetes-book-material
 git checkout ch08
 ```
+
+📂 **[Parcourir les fichiers de la branche `ch08`](https://github.com/nkerzazi/Kubernetes-book-material/tree/ch08)**
 
 Chaque branche est **fonctionnelle et autonome** : vous pouvez rejoindre le fil
 rouge à n'importe quel chapitre sans avoir fait les précédents.

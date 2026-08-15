@@ -27,8 +27,12 @@ kubectl apply -f k8s/base/pod-api.yaml && kubectl get pod escale-api -w
 ## Récupérer cet état
 
 ```bash
+git clone https://github.com/nkerzazi/Kubernetes-book-material.git
+cd Kubernetes-book-material
 git checkout ch05
 ```
+
+📂 **[Parcourir les fichiers de la branche `ch05`](https://github.com/nkerzazi/Kubernetes-book-material/tree/ch05)**
 
 Chaque branche est **fonctionnelle et autonome** : vous pouvez rejoindre le fil
 rouge à n'importe quel chapitre sans avoir fait les précédents.

@@ -29,8 +29,12 @@ docker rm -f escale && docker run -d -p 8080:8000 --name escale escale/demo:ch01
 ## Récupérer cet état
 
 ```bash
+git clone https://github.com/nkerzazi/Kubernetes-book-material.git
+cd Kubernetes-book-material
 git checkout ch01
 ```
+
+📂 **[Parcourir les fichiers de la branche `ch01`](https://github.com/nkerzazi/Kubernetes-book-material/tree/ch01)**
 
 Chaque branche est **fonctionnelle et autonome** : vous pouvez rejoindre le fil
 rouge à n'importe quel chapitre sans avoir fait les précédents.

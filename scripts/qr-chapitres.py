@@ -71,6 +71,10 @@ def main() -> int:
     p.add_argument("--sortie", default="qr", help="repertoire de sortie")
     p.add_argument("--taille-mm", type=float, default=22.0,
                    help="taille imprimee, en millimetres (22 mm recommande)")
+    p.add_argument("--branche-index", default="main",
+                   help="branche portant les fiches de chapitre")
+    p.add_argument("--vers-branche", action="store_true",
+                   help="viser l arborescence de la branche plutot que la fiche")
     args = p.parse_args()
 
     base = f"https://github.com/{args.compte}/{args.depot}"
@@ -84,7 +88,11 @@ def main() -> int:
 
     lignes = ["| Ch. | Titre | Branche | QR |", "|---|---|---|---|"]
     for branche, titre in CHAPITRES.items():
-        url = f"{base}/tree/{branche}"
+        # La fiche du chapitre, et non l arborescence brute : elle indique ce que
+        # le chapitre ajoute, les commandes cles et les points de controle, et
+        # elle renvoie vers la branche. C est la bonne porte d entree.
+        url = (f"{base}/tree/{branche}" if args.vers_branche
+               else f"{base}/tree/{args.branche_index}/chapitres/{branche}")
         version = generer(url, sortie / f"{branche}.svg", args.taille_mm)
         print(f"{branche + '.svg':14} {version:>7}  {url}")
         lignes.append(f"| {branche[2:]} | {titre} | `{branche}` | `qr/{branche}.svg` |")
@@ -92,9 +100,11 @@ def main() -> int:
     (sortie / "INDEX.md").write_text(
         "# QR codes par chapitre\n\n"
         f"Depot : {base}\n\n"
-        "Chaque QR code pointe vers la branche du chapitre : le lecteur arrive\n"
-        "directement sur l'etat d'Escale a la fin de ce chapitre, sans avoir\n"
-        "besoin des precedents.\n\n"
+        "Chaque QR code pointe vers la **fiche du chapitre** : ce que le chapitre\n"
+        "ajoute au depot, les commandes cles, les points de controle, et un lien\n"
+        "vers la branche correspondante. Le lecteur arrive oriente, et non devant\n"
+        "une arborescence de fichiers.\n\n"
+        "Option `--vers-branche` pour viser directement l arborescence.\n\n"
         "**A placer en ouverture de chapitre**, en marge exterieure, a 22 mm de\n"
         "cote. Format SVG vectoriel : ne jamais convertir en JPEG.\n\n"
         + "\n".join(lignes) + "\n"
