@@ -1,0 +1,7 @@
+# Version de depart fournie aux etudiants : ~912 Mo, Node embarque pour rien.
+FROM node:22
+WORKDIR /app
+COPY . .
+RUN npm install --no-audit --no-fund && npm run build
+EXPOSE 80
+CMD ["npx", "serve", "-l", "80", "dist"]

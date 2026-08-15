@@ -1,0 +1,30 @@
+# Chapitre 11 — RBAC minimal pour une equipe applicative : lire et deployer,
+# rien d'autre. Aucun acces aux Secrets en lecture directe.
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: escale-app
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: escale-exploitation
+rules:
+  - apiGroups: [""]
+    resources: [pods, pods/log, services, configmaps]
+    verbs: [get, list, watch]
+  - apiGroups: [apps]
+    resources: [deployments, replicasets]
+    verbs: [get, list, watch, patch]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: escale-exploitation
+subjects:
+  - kind: ServiceAccount
+    name: escale-app
+roleRef:
+  kind: Role
+  name: escale-exploitation
+  apiGroup: rbac.authorization.k8s.io

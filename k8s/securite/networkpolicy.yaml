@@ -1,0 +1,40 @@
+# Chapitre 11 — refus par defaut, puis autorisations explicites.
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: refus-par-defaut
+spec:
+  podSelector: {}
+  policyTypes: [Ingress, Egress]
+---
+# Piege classique : une politique de refus coupe aussi le DNS, et tout casse
+# sans message clair. Cette regle est le correctif a faire trouver.
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: autoriser-dns
+spec:
+  podSelector: {}
+  policyTypes: [Egress]
+  egress:
+    - to:
+        - namespaceSelector: {}
+          podSelector:
+            matchLabels: { k8s-app: kube-dns }
+      ports:
+        - { protocol: UDP, port: 53 }
+        - { protocol: TCP, port: 53 }
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: api-vers-postgres
+spec:
+  podSelector:
+    matchLabels: { app: postgres }
+  policyTypes: [Ingress]
+  ingress:
+    - from:
+        - podSelector: { matchLabels: { app: escale-api } }
+        - podSelector: { matchLabels: { app: escale-worker } }
+      ports: [{ protocol: TCP, port: 5432 }]

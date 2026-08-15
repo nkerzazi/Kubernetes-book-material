@@ -1,0 +1,41 @@
+# Chapitre 9 — escale-eta entre en scene : 300 Mo de modele, 30 s de chargement.
+# C'est le seul service pour lequel une startupProbe est reellement necessaire,
+# et c'est pourquoi il n'apparait pas avant ce chapitre.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: escale-eta
+spec:
+  replicas: 1
+  selector:
+    matchLabels: { app: escale-eta }
+  template:
+    metadata:
+      labels: { app: escale-eta }
+    spec:
+      terminationGracePeriodSeconds: 30
+      containers:
+        - name: eta
+          image: escale-eta:0.1
+          imagePullPolicy: IfNotPresent
+          ports: [{ containerPort: 8000 }]
+          env:
+            - name: INFERENCE_MODE
+              value: mock            # mock : symptomes identiques, sans GPU
+            - name: STARTUP_DELAY_S
+              value: "30"
+          resources:
+            requests: { cpu: "250m", memory: "512Mi" }
+            limits:   { cpu: "1000m", memory: "1Gi" }   # depassee -> OOMKilled
+          # Trois sondes, trois questions differentes.
+          startupProbe:                 # "a-t-il fini de demarrer ?"
+            httpGet: { path: /healthz, port: 8000 }
+            periodSeconds: 5
+            failureThreshold: 12        # 60 s de tolerance au chargement
+          livenessProbe:                # "le processus est-il vivant ?"
+            httpGet: { path: /healthz, port: 8000 }
+            periodSeconds: 10
+            failureThreshold: 3         # trop agressif ici = incident amplifie
+          readinessProbe:               # "peut-il recevoir du trafic ?"
+            httpGet: { path: /readyz, port: 8000 }
+            periodSeconds: 5

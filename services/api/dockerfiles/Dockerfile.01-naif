@@ -1,0 +1,8 @@
+# Etape 1 du tableau 2.9.4 — le point de depart, volontairement fautif.
+# Deux defauts : image de base complete, et COPY . . avant l'installation.
+FROM python:3.12
+WORKDIR /app
+COPY . .
+RUN pip install -r requirements.txt
+EXPOSE 8000
+CMD ["uvicorn", "escale_api.main:app", "--host", "0.0.0.0", "--port", "8000"]

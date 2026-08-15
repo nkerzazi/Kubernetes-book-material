@@ -1,0 +1,25 @@
+# Chapitre 8 — une seule porte d'entree pour toute la pile.
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: escale
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-staging
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts: [escale.127.0.0.1.nip.io]     # repli sans DNS d'etablissement
+      secretName: escale-tls
+  rules:
+    - host: escale.127.0.0.1.nip.io
+      http:
+        paths:
+          - path: /api
+            pathType: Prefix
+            backend:
+              service: { name: escale-api, port: { number: 8000 } }
+          - path: /
+            pathType: Prefix
+            backend:
+              service: { name: escale-web, port: { number: 80 } }

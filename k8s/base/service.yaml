@@ -1,0 +1,12 @@
+# Chapitre 6 — le Service donne une adresse stable a un ensemble de Pods.
+apiVersion: v1
+kind: Service
+metadata:
+  name: escale-api
+spec:
+  type: ClusterIP            # NodePort au ch. 8 pour comparaison, puis Ingress
+  selector:
+    app: escale-api          # correspond aux LABELS des Pods, pas a leur nom
+  ports:
+    - port: 8000
+      targetPort: 8000

@@ -1,0 +1,29 @@
+# Chapitre 10 — des alertes fondees sur les symptomes ressentis par
+# l'utilisateur, pas sur des seuils techniques arbitraires.
+groups:
+  - name: escale
+    rules:
+      - alert: TauxErreursEleve
+        expr: |
+          sum(rate(escale_requetes_total{code=~"5.."}[5m]))
+            / sum(rate(escale_requetes_total[5m])) > 0.05
+        for: 5m
+        labels: { severite: critique }
+        annotations:
+          resume: "Plus de 5 % d'erreurs sur 5 minutes"
+          action: "Verifier /readyz, puis les journaux du service en cause"
+
+      - alert: FileQuiSAccumule
+        expr: escale_file_profondeur > 500
+        for: 10m
+        labels: { severite: avertissement }
+        annotations:
+          resume: "Le worker ne suit plus le rythme des positions"
+          action: "Verifier le HPA et la latence de la base"
+
+      - alert: ServiceNonPret
+        expr: escale_pret == 0
+        for: 3m
+        labels: { severite: critique }
+        annotations:
+          resume: "Un service se declare non pret depuis 3 minutes"

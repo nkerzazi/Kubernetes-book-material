@@ -1,0 +1,24 @@
+# Chapitre 9 — autoscaling sur la profondeur de file, pas sur le CPU.
+# Sans escale-sim pour produire de la charge, cet objet ne se declenche jamais
+# et l'etudiant apprend la syntaxe au lieu du comportement.
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: escale-worker
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: escale-worker
+  minReplicas: 1
+  maxReplicas: 10
+  metrics:
+    - type: Pods
+      pods:
+        metric: { name: escale_file_profondeur }
+        target:
+          type: AverageValue
+          averageValue: "50"          # 50 positions en attente par replica
+  behavior:
+    scaleDown:
+      stabilizationWindowSeconds: 300  # eviter l'oscillation

@@ -1,0 +1,22 @@
+# Chapitre 5 — le Pod, et rien d'autre.
+# Volontairement nu : ni Deployment, ni Service, ni sonde. L'etudiant doit
+# constater qu'un Pod supprime ne revient pas. C'est ce manque qui motive
+# le chapitre 6.
+apiVersion: v1
+kind: Pod
+metadata:
+  name: escale-api
+  labels:
+    app: escale-api
+spec:
+  containers:
+    - name: api
+      image: escale-api:0.2
+      imagePullPolicy: IfNotPresent   # image construite localement (kind / minikube)
+      ports:
+        - containerPort: 8000
+      env:
+        - name: SERVICE_NAME
+          value: escale-api
+        - name: PORT
+          value: "8000"

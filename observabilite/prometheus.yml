@@ -1,0 +1,21 @@
+# Chapitre 10 — collecte des metriques. Tous les services d'Escale exposent
+# /metrics : c'est la regle 4 du contrat de conteneur, posee des le ch. 2.
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+rule_files:
+  - alertes.yml
+
+scrape_configs:
+  - job_name: escale
+    static_configs:
+      - targets: [api:8000, worker:9100, eta:8000]
+        labels: { pile: escale }
+
+  - job_name: kubernetes-pods
+    kubernetes_sd_configs: [{ role: pod }]
+    relabel_configs:
+      - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_scrape]
+        action: keep
+        regex: "true"

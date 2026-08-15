@@ -1,0 +1,27 @@
+# Valeurs par defaut = environnement de developpement.
+# Les fichiers values-staging.yaml et values-prod.yaml ne redefinissent que
+# ce qui change : c'est tout l'interet, et le critere de reussite du TP ch. 9.
+environnement: dev
+
+api:
+  image: { repository: escale-api, tag: "0.2", pullPolicy: IfNotPresent }
+  replicas: 1
+  resources:
+    requests: { cpu: 100m, memory: 128Mi }
+    limits:   { cpu: 500m, memory: 256Mi }
+
+worker:
+  replicas: 1
+  hpa: { active: false, min: 1, max: 5, profondeurCible: 50 }
+
+eta:
+  active: false                 # n'apparait qu'a partir du ch. 9
+  inferenceMode: mock
+
+ingress:
+  active: false
+  host: escale.127.0.0.1.nip.io
+  tls: false
+
+postgres:
+  taille: 2Gi

@@ -1,0 +1,15 @@
+# Etape 6 — build multi-etapes : les dependances sont installees a part puis
+# copiees. Rien de ce qui a servi a construire n'entre dans l'image finale.
+FROM python:3.12-slim AS build
+WORKDIR /src
+COPY requirements.txt .
+RUN pip install --no-cache-dir --target=/deps -r requirements.txt
+
+FROM python:3.12-slim
+WORKDIR /app
+ENV PYTHONPATH=/deps PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1
+COPY --from=build /deps /deps
+COPY escale_api ./escale_api
+COPY escale_common ./escale_common
+EXPOSE 8000
+CMD ["python", "-m", "uvicorn", "escale_api.main:app", "--host", "0.0.0.0", "--port", "8000"]

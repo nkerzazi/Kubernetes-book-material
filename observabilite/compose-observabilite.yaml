@@ -1,0 +1,28 @@
+# Chapitre 10 — pile d'observabilite, a lancer a cote de la pile applicative :
+#   docker compose -f compose.yaml -f observabilite/compose-observabilite.yaml up
+services:
+  prometheus:
+    image: prom/prometheus:v3.0.1
+    volumes:
+      - ./observabilite/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ./observabilite/alertes.yml:/etc/prometheus/alertes.yml:ro
+    ports: ["9090:9090"]
+
+  grafana:
+    image: grafana/grafana:11.4.0
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_PASSWORD:-escale}
+      GF_AUTH_ANONYMOUS_ENABLED: "true"
+    ports: ["3000:3000"]
+    depends_on: [prometheus]
+
+  loki:
+    image: grafana/loki:3.3.2
+    ports: ["3100:3100"]
+
+  otel:
+    image: otel/opentelemetry-collector-contrib:0.116.1
+    command: ["--config=/etc/otel.yaml"]
+    volumes:
+      - ./observabilite/otel-collector.yaml:/etc/otel.yaml:ro
+    ports: ["4317:4317", "4318:4318"]

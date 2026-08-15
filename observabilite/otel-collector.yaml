@@ -1,0 +1,21 @@
+# Chapitre 10 — les traces. Le collecteur recoit, echantillonne, puis exporte.
+receivers:
+  otlp:
+    protocols: { grpc: { endpoint: 0.0.0.0:4317 }, http: { endpoint: 0.0.0.0:4318 } }
+
+processors:
+  batch: { timeout: 5s }
+  # L'echantillonnage n'est pas un detail de cout : a 100 %, le stockage des
+  # traces depasse rapidement celui des donnees applicatives.
+  probabilistic_sampler: { sampling_percentage: 10 }
+
+exporters:
+  otlp/tempo: { endpoint: tempo:4317, tls: { insecure: true } }
+  debug: { verbosity: basic }
+
+service:
+  pipelines:
+    traces:
+      receivers: [otlp]
+      processors: [probabilistic_sampler, batch]
+      exporters: [otlp/tempo]

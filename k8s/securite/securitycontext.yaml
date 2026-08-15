@@ -1,0 +1,17 @@
+# Chapitre 11 — durcissement a appliquer sur chaque Deployment.
+# Fragment a fusionner : c'est l'exercice, pas un fichier a appliquer tel quel.
+spec:
+  template:
+    spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 10001
+        fsGroup: 10001
+        seccompProfile: { type: RuntimeDefault }
+      containers:
+        - name: api
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: ["ALL"]

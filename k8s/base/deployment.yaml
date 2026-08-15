@@ -1,0 +1,30 @@
+# Chapitre 6 — le Deployment remplace le Pod nu.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: escale-api
+  labels: { app: escale-api }
+spec:
+  replicas: 3
+  # Le selector doit correspondre aux labels du template. Un ecart ici produit
+  # un Service vide et une heure de diagnostic : c'est l'exercice papier du ch. 6.
+  selector:
+    matchLabels: { app: escale-api }
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0        # aucune capacite perdue pendant la mise a jour
+  template:
+    metadata:
+      labels: { app: escale-api }
+    spec:
+      terminationGracePeriodSeconds: 30   # laisse le temps du drainage (contrat, regle 6)
+      containers:
+        - name: api
+          image: escale-api:0.2
+          imagePullPolicy: IfNotPresent
+          ports: [{ containerPort: 8000 }]
+          env:
+            - name: SERVICE_NAME
+              value: escale-api

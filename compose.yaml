@@ -1,0 +1,95 @@
+# Pile Escale — cible du chapitre 4.
+#
+# Aux chapitres 1 a 3, on lance les conteneurs a la main : c'est precisement le
+# probleme que ce fichier resout, et il ne faut donc pas le donner trop tot.
+#
+#   docker compose up --build      web sur :8081, api sur :8080
+
+services:
+
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-escale}
+      POSTGRES_DB: escale
+    volumes:
+      - donnees:/var/lib/postgresql/data     # la persistance du chapitre 3
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d escale"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  redis:
+    image: redis:7-alpine
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  # Tache ponctuelle : applique les migrations puis s'arrete avec le code 0.
+  # Devient un Job Kubernetes au chapitre 7.
+  migrate:
+    build: ./services/migrate
+    environment:
+      DATABASE_URL: postgresql://postgres:${POSTGRES_PASSWORD:-escale}@postgres:5432/escale
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: "no"
+
+  api:
+    build: ./services/api
+    environment:
+      SERVICE_NAME: escale-api
+      PORT: 8000
+      LOG_FORMAT: json
+      DATABASE_URL: postgresql://postgres:${POSTGRES_PASSWORD:-escale}@postgres:5432/escale
+    ports: ["8080:8000"]
+    healthcheck:
+      test: ["CMD", "python", "-c",
+             "import urllib.request;urllib.request.urlopen('http://localhost:8000/readyz')"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+      start_period: 15s
+    depends_on:
+      migrate:
+        condition: service_completed_successfully   # la vraie reponse au ch. 4
+
+  worker:
+    build: ./services/worker
+    environment:
+      SERVICE_NAME: escale-worker
+      PORT: 9100
+      DATABASE_URL: postgresql://postgres:${POSTGRES_PASSWORD:-escale}@postgres:5432/escale
+      REDIS_URL: redis://redis:6379
+    depends_on:
+      redis:
+        condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
+
+  sim:
+    build: ./services/sim
+    environment:
+      SERVICE_NAME: escale-sim
+      SIM_MODE: redis            # http aux chapitres 1 a 3, redis a partir du 4
+      REDIS_URL: redis://redis:6379
+      NAVIRES: ${NAVIRES:-20}
+      CADENCE_S: ${CADENCE_S:-2}
+      GRAINE: 42                 # trafic reproductible d'un poste a l'autre
+    depends_on:
+      redis:
+        condition: service_healthy
+
+  web:
+    build: ./services/web
+    ports: ["8081:80"]
+    depends_on:
+      api:
+        condition: service_healthy
+
+volumes:
+  donnees:

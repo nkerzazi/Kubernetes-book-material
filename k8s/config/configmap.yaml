@@ -1,0 +1,11 @@
+# Chapitre 7 — la configuration sort de l'image.
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: escale-config
+data:
+  SERVICE_NAME: escale-api
+  PORT: "8000"
+  LOG_FORMAT: json
+  LOG_LEVEL: INFO
+  GRACEFUL_TIMEOUT_S: "25"

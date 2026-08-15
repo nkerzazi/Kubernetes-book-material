@@ -1,0 +1,19 @@
+# Chapitre 7 — les migrations sont un travail ponctuel, donc un Job.
+# Le code de sortie 0 est ce sur quoi l'orchestrateur s'appuie.
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: escale-migrate
+spec:
+  backoffLimit: 3
+  template:
+    spec:
+      restartPolicy: OnFailure
+      containers:
+        - name: migrate
+          image: escale-migrate:0.1
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef: { name: escale-secrets, key: DATABASE_URL }

@@ -1,0 +1,24 @@
+# Production : seul ce qui differe du dev figure ici.
+environnement: prod
+
+api:
+  replicas: 3
+  resources:
+    requests: { cpu: 250m, memory: 256Mi }
+    limits:   { cpu: 1000m, memory: 512Mi }
+
+worker:
+  replicas: 2
+  hpa: { active: true, min: 2, max: 10, profondeurCible: 50 }
+
+eta:
+  active: true
+  inferenceMode: real
+
+ingress:
+  active: true
+  host: escale.exemple.fr
+  tls: true
+
+postgres:
+  taille: 50Gi
